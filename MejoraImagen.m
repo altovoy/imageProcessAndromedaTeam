@@ -1,5 +1,6 @@
 function ImSnCon=MejoraImagen(Ie,valorpixel)
-[R,G,B] = imsplit(Ie);
+
+R = Ie(:, :, 1);
 ImSn=R-valorpixel;
 ImSnCon = imadjust(ImSn);
 end

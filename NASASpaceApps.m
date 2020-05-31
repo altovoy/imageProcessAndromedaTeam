@@ -1,35 +1,48 @@
 clc
-close all
 clear all
+close all
+
+% Los datos estan organizados en arrays de structs 
+% cada elemento del contiene un struct con los atributos  -> 
+
+% Extrayendo y organizando las imagenes desde el folder img 
+files = sortByDate(dir ('./img/*png'));
+
+% Valor que se le sustraerá a cada imagen
+substract = [150 130 250 250 220 180 220 240 240 200 180 240];
+temp = num2cell(substract);
+[files.substract] = temp{:};
 
 
-%introducir imagenes
-Ie1=imread('25-01-2020.png');
+
+% Lectura y procesamiento de imagenes
+for i=1:length(files)
+    % Lectura de imagen 
+    files(i).initialImg = imread(strcat('./img/',files(i).name));
+    
+    % Procesamiento de imagen
+     files(i).substractedImg = MejoraImagen(files(i).initialImg,files(i).substract);
+end
+
+figure;
+suptitle('AVERAGE BRIGHTNESS');
+subplot(1,3,1);
+
+avgImageBefore = avgImages( {files(1:6).substractedImg} );
+imshow(avgImageBefore); title('Before');
+
+subplot(1,3,2);
+avgImageAfter = avgImages( {files(7:12).substractedImg} );
+imshow(avgImageAfter); title('After');
+
+subplot(1,3,3);
+diff = imabsdiff(avgImageBefore,avgImageAfter);
+imshow(diff); title('Difference');
 
 
 
-%Filtrado de la imagen por resta de grises
-I1=MejoraImagen(Ie1,150);
-I2=MejoraImagen(Ie2,130);
-I3=MejoraImagen(Ie3,250);
-I4=MejoraImagen(Ie4,250);
-I5=MejoraImagen(Ie5,220);
-I6=MejoraImagen(Ie6,180);
-I7=MejoraImagen(Ie7,220);
-I8=MejoraImagen(Ie8,240);
-I9=MejoraImagen(Ie9,240);
-I10=MejoraImagen(Ie10,200);
-I11=MejoraImagen(Ie11,180);
-I12=MejoraImagen(Ie12,240);
+figure;
 
-PromSP = (double(I1) + double(I2)+ double(I3)+ double(I4)+ double(I5)+ double(I6)) / 6;
-imshow(PromSP); title('imagen promedio sin confinamiento');
-PromP = (double(I7) + double(I8)+ double(I9)+ double(I10)+ double(I11)+ double(I12)) / 6;
-figure,
-imshow(PromP); title('imagen promedio en confinamiento');
-
-Z=imabsdiff(PromSP,PromP);
-figure,
-imshow(Z)
-
-
+C = imfuse(files(1).substractedImg,files(8).substractedImg,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]); 
+imshow(C);
+title('Before and after quarantine');
