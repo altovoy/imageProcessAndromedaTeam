@@ -31,11 +31,11 @@ figure;
 suptitle('AVERAGE BRIGHTNESS');
 subplot(1,3,1);
 
-avgImageBefore = avgImages( {files(1:6).substractedImg} );
+avgImageBefore = uint8((uint16(files(1).substractedImg) + uint16(files(2).substractedImg)+ uint16(files(3).substractedImg)+ uint16(files(4).substractedImg)+ uint16(files(5).substractedImg)+ uint16(files(6).substractedImg)) / 6);
 imshow(avgImageBefore); title('Before');
 
 subplot(1,3,2);
-avgImageAfter = avgImages( {files(7:12).substractedImg} );
+avgImageAfter = uint8((uint16(files(7).substractedImg) + uint16(files(8).substractedImg)+ uint16(files(9).substractedImg)+ uint16(files(10).substractedImg)+ uint16(files(11).substractedImg)+ uint16(files(12).substractedImg)) / 6);
 imshow(avgImageAfter); title('After');
 
 subplot(1,3,3);
@@ -43,10 +43,9 @@ diff = imabsdiff(avgImageBefore,avgImageAfter);
 imshow(diff); title('Difference');
 
 
-
 figure;
 coloredImage = imfuse(avgImageBefore,avgImageAfter,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]); 
-imshow(coloredImage), grid on;
+imshow(coloredImage);
 
 kms = size(coloredImage)*km_px;
 
@@ -64,12 +63,9 @@ text(1.1,0.85,'Don´t vary',...
      'horiz','center',...
      'vert','bottom',...
      'units','normalized','backgroundcolor','y')
-gridImage(coloredImage, 5);
+
 title('Before and after quarantine');
 axis image;
-
-
-
 
 %% PROFILE
 %crear perfil en longitud
