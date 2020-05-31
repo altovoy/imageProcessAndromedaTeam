@@ -2,6 +2,9 @@ clc
 clear all
 close all
 
+% km/px
+km_px = 0.110;
+
 % Los datos estan organizados en arrays de structs 
 % cada elemento del contiene un struct con los atributos  -> 
 
@@ -42,21 +45,46 @@ imshow(diff); title('Difference');
 
 
 figure;
+coloredImage = imfuse(avgImageBefore,avgImageAfter,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]); 
+imshow(coloredImage), grid on;
 
-coloredImage = imfuse(files(1).substractedImg,files(8).substractedImg,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]); 
-imshow(coloredImage);
+kms = size(coloredImage)*km_px;
+
+ylabel(strcat(num2str(kms(1)), ' KM'));
+xlabel(strcat(num2str(kms(2)), ' KM'));
+text(1.1,0.95,'Before',...
+     'horiz','center',...
+     'vert','bottom',...
+     'units','normalized','backgroundcolor','g')
+text(1.1,0.9,' After ',...
+     'horiz','center',...
+     'vert','bottom',...
+     'units','normalized','backgroundcolor','r')
+text(1.1,0.85,'Don´t vary',...
+     'horiz','center',...
+     'vert','bottom',...
+     'units','normalized','backgroundcolor','y')
+gridImage(coloredImage, 5);
 title('Before and after quarantine');
+axis image;
+
 
 
 
 %% PROFILE
-
-xi=[1000,1];%punto de inicio de la linea de datos
-yi=[1000,3271];%punto final de la linea de datos
-data=improfile(coloredImage,xi,yi);%perfil de linea vector de 3 dimensiones con planos de color
-datoR=data(:,:,1);%plano rojo del vector
-datoG=data(:,:,2);%plano verde del vector
+%crear perfil en longitud
+[datoR,datoG,Kmintlon,Kmintlat,Pix]=CrearPerfilMapa(coloredImage,0,200, km_px);
 figure,
-plot(datoR,'r');%grafica de valores en el plano rojo
+plot(Kmintlon,datoR,'r');
 hold on
-plot(datoG,'G')%grafica de valores en el plano verde
+plot(Kmintlon,datoG,'G'); title('Pefil de linea en longitud')
+xlabel('Kilometros') 
+ylabel('Valor del pixel') 
+%crear perfil en latitud
+[datoR,datoG,Kmintlon,Kmintlat,Pix]=CrearPerfilMapa(coloredImage,1,200, km_px);
+figure,
+plot(datoR,Kmintlat,'r');
+hold on
+plot(datoG,Kmintlat,'G'); title('Pefil de linea en latitud')
+xlabel('Kilometros') 
+ylabel('Valor del pixel') 
