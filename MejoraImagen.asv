@@ -1,5 +1,0 @@
-function ImSnCon=MejoraImagen(Ie,valorpixel)
-e);
-ImSn=R-valorpixel;
-ImSnCon = imadjust(ImSn);
-end
